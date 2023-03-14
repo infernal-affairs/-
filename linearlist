@@ -1,0 +1,204 @@
+#include<iostream>
+#include<stdlib.h>
+#include<stdio.h>
+#include<string>
+#include<iomanip>
+#include<fstream>
+#include<iomanip>
+using namespace std;
+#define MAXSIZE 50
+;
+typedef struct
+{
+	int no;
+	std::string name;
+	int cls;
+}ElemType;
+typedef struct
+{
+	ElemType* elem;
+	int length;
+}Sqlist;
+void Menu()
+{  /*显示菜单子函数*/
+	printf("\n         顺序表的各种操作");
+	printf("\n==========================================");
+	printf("\n|      1——建立                                  |");
+	printf("\n|      2——插入元素                              |");
+	printf("\n|      3——删除元素                              |");
+	printf("\n|      4——按位置查找                            |");
+	printf("\n|      5——按元素值查找                          |");
+	printf("\n|      6——求长度                                |");
+	printf("\n|      0——返回                                  |");
+	printf("\n==========================================");
+	printf("\n请输入菜单号(0-6):");
+}
+void InitList(Sqlist& L)
+{
+	L.elem = new ElemType[MAXSIZE];
+	if (!L.elem)
+	{
+		std::cout << "对不起，空间内存分配失败！退出整个程序。\n";
+		exit(-2);
+	}
+	L.length = 0;
+	std::cout << "线性表初始化成功！\n";
+
+}
+void shuru(Sqlist& L, int n)
+{
+	int i;
+	cout << "输入学生信息的学号 姓名 班级：" << endl;
+	for (i = 0; i < n; i++)
+	{
+		cin >> L.elem[i].no >> L.elem[i].name >> L.elem[i].cls;
+	}
+	L.length = n;
+	cout << "输入成功" << endl;
+	cout << endl;
+}
+void DispList(Sqlist L)
+{
+	int i;
+	for (i = 0; i < L.length; i++)
+	{
+		cout<<L.elem[i].no << L.elem[i].name << L.elem[i].cls;
+	}
+}
+bool ListInsert(Sqlist& L, int i, ElemType e)
+{
+	if (i<1 || i > L.length + 1)
+		return 0;
+	if (L.length == MAXSIZE)
+		return 0;
+	for (int j = i; j <= L.length; j++)
+	{
+		L.elem[j] = L.elem[j - 1];
+	}
+	L.elem[i - 1] = e;
+	++L.length;
+	return 1;
+}
+int GetElem(Sqlist& L, int i, ElemType& x)
+{
+	if (i<1 || i>L.length)
+	{
+		return 0;
+	}
+	x = L.elem[i - 1];
+	return 1;
+}
+int Locate(Sqlist& L, ElemType x)
+{
+	int i = 0;
+	while (i < L.length && L.elem[i].no != x.no && L.elem[i].name != x.name && L.elem[i].cls != x.cls)
+		i++;
+	if (i >= L.length)
+		return 0;
+	else
+		return i + i;
+}
+int ListDelete(Sqlist& L, int i, ElemType& x)
+{
+	int j;
+	if (L.length == 0)
+	{
+		cout << "顺序表为空！";
+		return 0;
+	}
+	if (i<1 || i>L.length)
+	{
+		cout << "不存在第" << i << "个元素";
+		return 0;
+	}
+	x = L.elem[i - 1];
+	for (j = i; j < L.length; j++)
+	{
+		L.elem[j - 1] = L.elem[j];
+		L.length--;
+	}
+	return 1;
+}
+
+int main()
+{
+	int n, i, loc;
+	ElemType x;
+	Sqlist l;
+	char ch1, ch2, a;
+	ch1 = 'y';
+	while (ch1 == 'y' || ch1 == 'Y')
+	{
+		Menu();
+		cin >> ch2;
+		switch (ch2)
+		{
+		case '1':
+			InitList(l);
+			cout << "请输入建立线性表的个数：";
+			cin >> n;
+			shuru(l, n);
+			cout << "建立的线性表为：" << endl;
+			DispList(l);
+			break;
+		case '2':
+			cout << "请输入要插入的位置：";
+			cin >> i;
+			cout << "请输入要插入的元素值：";
+			cin >> x.no >> x.name >> x.cls;
+			if (ListInsert(l, i, x))
+			{
+				cout << "已成功在第" << i << "的位置上插入" << x.no << x.name << x.cls << "插入后的线性表为:" << endl;
+				DispList(l);
+			}
+			else
+				cout << "输入插入的参数错误！";
+			break;
+		case '3':
+			cout << "请输入要删除元素的位置：";
+			cin >> i;
+			if (ListDelete(l, i, x))
+			{
+				cout << "已成功在" << i << "的位置上删除" << x.no << x.name << x.cls << "删除后的线性表为：" << endl;
+				DispList(l);
+			}
+			else
+				cout << endl << "输入删除的参数错误";
+			break;
+		case'4':
+			cout << "请输入要查看元素的位置：";
+			cin >> i;
+			if (GetElem(l, i, x))
+				cout << "当前线性表第" << i << "个元素的值为" << x.no << x.name << x.cls;
+			else
+				cout << "输入的位置有误！";
+			break;
+		case'5':
+			cout << "请输入要查找的元素：";
+			cin >> x.no >> x.name >> x.cls;
+			loc = Locate(l, x);
+			if (loc)
+				cout << "查找元素值为" << x.no << x.name << x.cls << "的位置是" << loc;
+			else
+				cout << "该表中无此元素！";
+			break;
+		case '6':
+			cout << "当前线性表的长度为" << l.length;
+			break;
+		case '0':
+			ch1 = 'n'; break;
+		default:
+			cout << "输入有误，请输入0~6进行选择！";
+		}
+		if (ch2 != '0')
+		{
+			cout << endl << "按回车键继续，按任意键返回主菜单！" << endl;
+			a = getchar();
+			if (a != '\xA')
+			{
+				getchar(); ch1 = 'n';
+			}
+		}
+	}
+}
+
